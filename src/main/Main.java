@@ -1,4 +1,4 @@
-package defaultPackage;
+package main;
 
 import services.AdminService;
 import services.UserService;
