@@ -107,12 +107,12 @@ public class AdminService extends Admin {
                 try {
                     int option = scanner.nextInt();
                     switch (option) {
-                        case 1 -> new BookService().addBook(adminId, adminName);
+                        case 1 -> new BookService().addBook();
                         case 2 -> new AuthorService().addAuthor(adminId, adminName);
                         case 3 -> new LanguageService().addLanguage(adminId, adminName);
                         case 4 -> new BookService().adminViewBooks(adminId, adminName);
-                        case 5 -> new AuthorService().viewAuthors(adminId, adminName);
-                        case 6 -> new LanguageService().viewLanguages(adminId, adminName);
+                        case 5 -> new AuthorService().viewAuthors();
+                        case 6 -> new LanguageService().viewLanguages();
                         case 7 -> new BookDueListService().getOverDueDateList(adminId, adminName);
                         case 8 -> {
                             new OtherServices().indexMethod();

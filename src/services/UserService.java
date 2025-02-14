@@ -98,4 +98,37 @@ public class UserService {
             e.printStackTrace();
         }
     }
+
+    public void userLogin() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter Email:");
+        String email = scanner.nextLine();
+        System.out.println("Enter Password:");
+        String password = scanner.nextLine();
+    
+        String query = "SELECT user_id, name, is_admin FROM users WHERE email = ? AND password = ?";
+        
+        try (Connection con = ConnectionClass.getConnectionMethod();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+    
+            if (rs.next()) {
+                int userId = rs.getInt("user_id");
+                String userName = rs.getString("name");
+                boolean isAdmin = rs.getBoolean("is_admin");
+    
+                System.out.println("✅ Login successful! Welcome, " + userName);
+                System.out.println("🔹 User ID: " + userId);
+                System.out.println("🔹 Role: " + (isAdmin ? "Admin" : "User"));
+            } else {
+                System.out.println("❌ Invalid email or password. Please try again.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }

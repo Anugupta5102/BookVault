@@ -106,4 +106,29 @@ public class BookService {
             e.printStackTrace();
         }
     }
+
+    public void adminViewBooks(int adminId, String adminName) {
+        System.out.println("\n🔹 Admin: " + adminName + " (ID: " + adminId + ") is viewing all books.");
+    
+        String query = "SELECT b.book_id, b.title, a.name AS author, l.name AS language, b.genre, b.rating, b.available " +
+                       "FROM books b " +
+                       "JOIN authors a ON b.author_id = a.author_id " +
+                       "JOIN languages l ON b.language_id = l.language_id";
+    
+        try (Connection con = ConnectionClass.getConnectionMethod();
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            
+            System.out.println("\n📚 List of Books (Admin View):");
+            while (rs.next()) {
+                System.out.printf("ID: %d | Title: %s | Author: %s | Language: %s | Genre: %s | Rating: %.1f | Available: %s\n",
+                        rs.getInt("book_id"), rs.getString("title"), rs.getString("author"),
+                        rs.getString("language"), rs.getString("genre"), rs.getFloat("rating"),
+                        rs.getBoolean("available") ? "✅ Yes" : "❌ No");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
