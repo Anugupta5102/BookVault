@@ -1,13 +1,12 @@
 package services;
 
+import entities.Admin;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import entities.Admin;
 
 public class AdminService extends Admin {
 
@@ -21,22 +20,23 @@ public class AdminService extends Admin {
         System.out.println("|         SYSTEM          |");
         System.out.println("|      Admin  Login       |");
         System.out.println("---------------------------");
-
+    
         while (true) {
             try (Connection con = ConnectionClass.getConnectionMethod();
-                 PreparedStatement ps = con.prepareStatement("SELECT * FROM admin WHERE username = ? AND password = ?")) {
-
+                 PreparedStatement ps = con.prepareStatement(
+                    "SELECT * FROM users WHERE LOWER(name) = LOWER(?) AND password = ? AND is_admin = 1")) {
+    
                 System.out.print("Enter Username: ");
                 String username = scanner.next();
                 System.out.print("Enter Password: ");
                 String password = scanner.next();
-
+    
                 ps.setString(1, username);
                 ps.setString(2, password);
                 ResultSet rs = ps.executeQuery();
-
+    
                 if (rs.next()) {
-                    int adminId = rs.getInt("adminid");
+                    int adminId = rs.getInt("user_id");  // Changed from `adminid` to `user_id`
                     String adminName = rs.getString("name");
                     System.out.println("Login Success.");
                     adminHome(adminId, adminName);
@@ -56,6 +56,7 @@ public class AdminService extends Admin {
             }
         }
     }
+    
 
     public void adminHome(int adminId, String adminName) {
         System.out.println("________________________________________________________________________________________________________________");
@@ -64,34 +65,34 @@ public class AdminService extends Admin {
         System.out.println("---------------------------");
         System.out.println("Welcome, " + adminName);
         System.out.println("---------------------------");
-
-        String userCountQuery = "SELECT COUNT(uid) FROM user";
-        String bookCountQuery = "SELECT COUNT(bookid) FROM book";
-        String languageCountQuery = "SELECT COUNT(languageid) FROM language";
-        String authorCountQuery = "SELECT COUNT(authorid) FROM author";
-
+    
+        String userCountQuery = "SELECT COUNT(user_id) FROM users";  
+        String bookCountQuery = "SELECT COUNT(book_id) FROM books";  
+        String languageCountQuery = "SELECT COUNT(language_id) FROM languages";  
+        String authorCountQuery = "SELECT COUNT(author_id) FROM authors";  
+    
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement psUser = con.prepareStatement(userCountQuery);
              PreparedStatement psBook = con.prepareStatement(bookCountQuery);
              PreparedStatement psLanguage = con.prepareStatement(languageCountQuery);
              PreparedStatement psAuthor = con.prepareStatement(authorCountQuery)) {
-
+    
             ResultSet rsUser = psUser.executeQuery();
             ResultSet rsBook = psBook.executeQuery();
             ResultSet rsLanguage = psLanguage.executeQuery();
             ResultSet rsAuthor = psAuthor.executeQuery();
-
+    
             rsUser.next();
             rsBook.next();
             rsLanguage.next();
             rsAuthor.next();
-
+    
             System.out.println("Total Users    : " + rsUser.getInt(1));
             System.out.println("Total Books    : " + rsBook.getInt(1));
             System.out.println("Total Languages: " + rsLanguage.getInt(1));
             System.out.println("Total Authors  : " + rsAuthor.getInt(1));
             System.out.println("---------------------------");
-
+    
             while (true) {
                 System.out.println("|1. Add Books          |");
                 System.out.println("|2. Add Authors        |");
@@ -102,7 +103,7 @@ public class AdminService extends Admin {
                 System.out.println("|7. View Due Date List |");
                 System.out.println("|8. Logout             |");
                 System.out.println("---------------------------");
-
+    
                 System.out.print("Enter an Option: ");
                 try {
                     int option = scanner.nextInt();
@@ -129,4 +130,4 @@ public class AdminService extends Admin {
             System.out.println("Error fetching data: " + e.getMessage());
         }
     }
-}
+}    
