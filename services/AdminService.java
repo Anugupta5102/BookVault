@@ -1,5 +1,5 @@
 package services;
-import entities.Admin;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,184 +7,126 @@ import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class AdminService extends Admin{
-	
-	public void adminLogin() throws SQLException {
-//      create object for  Console class
-//		Console console = System.console();
-		System.out.println("________________________________________________________________________________________________________________");
-		System.out.println("---------------------------");
-		System.out.println("|                         |");
-		System.out.println("|       WELCOME TO        |");
-		System.out.println("|    LIBRARY MANAGEMENT   |");
-		System.out.println("|         SYSTEM          |");
-		System.out.println("|                         |");
-		System.out.println("|      Admin  Login       |");
-		System.out.println("|          Page           |");
-		System.out.println("|      ____________       |");
-		System.out.println("|                         |");
-		System.out.println("---------------------------");
-		while(true) {//loop starts
-			//create object for Scanner Class
-			Scanner scanner=new Scanner(System.in);
-			
-		System.out.println("Enter a UserName:");
-		//Object creation for AdminrService class:
-		AdminService adminservice = new AdminService();
-		adminservice.setUserName(scanner.next());
-		System.out.println("Enter a PassWord:");
-		adminservice.setPassWord(scanner.next());
-		final String query="select * from admin where username=? AND password=?";
-		Connection con = ConnectionClass.getConnectionMethod();
-		PreparedStatement ps = con.prepareStatement(query);		
-		ps.setString(1, adminservice.getUserName());
-		ps.setString(2, adminservice.getPassWord());
-		ResultSet rs=ps.executeQuery();
-		if(rs.next()) {
-			adminservice.setAid(rs.getInt(1));
-			adminservice.setName(rs.getString(2));
-			System.out.println("Login Success.");
-			adminHome(adminservice.getAid(),adminservice.getName());
-			break;
-		}else {
-			try {
-			System.out.println("Invalid Username and Password.");
-			System.out.println("   1.Try again     2.Exit     ");
-			int option=scanner.nextInt();
-			if(option == 1) {
-				continue;
-			}
-			else if(option == 2) {
-				OtherServices otherservices = new OtherServices();
-				otherservices.indexMethod();
-				scanner.close();
-				break;
-			}
-			else {
-				System.out.println("Invalid option!!!. Please select a valid option.");
-//				continue;
-			}
-			}catch(InputMismatchException e) {
-				System.out.println("Invalid option! Please Select a Valid Option.");
-//				OtherServices otherservices = new OtherServices();
-//				otherservices.indexMethod();
-//				scanner.close();
-//				break;
-			}
-		}
-		}//loop ends		
-	}
-	
-	public void adminHome(int aid, String name) throws SQLException {
-		//create object for Scanner Class
-		Scanner scanner=new Scanner(System.in);
-		final int adminId=aid;
-		final String adminName=name;
-		final String userCountQuery = "select count(uid) from user";
-		final String bookCountQuery = "select count(bookid) from book";
-		final String languageCountQuery = "select count(languageid) from language";
-		final String authorCountQuery = "select count(authorid) from author";
-		Connection con = ConnectionClass.getConnectionMethod();
-		PreparedStatement userCountQuerY = con.prepareStatement(userCountQuery);
-		ResultSet userCount=userCountQuerY.executeQuery();
-		userCount.next();
-		PreparedStatement bookCountQuerY = con.prepareStatement(bookCountQuery);
-		ResultSet bookCount=bookCountQuerY.executeQuery();
-		bookCount.next();
-		PreparedStatement languageCountQuerY = con.prepareStatement(languageCountQuery);
-		ResultSet languageCount=languageCountQuerY.executeQuery();
-		languageCount.next();
-		PreparedStatement authorCountQuerY = con.prepareStatement(authorCountQuery);
-		ResultSet authorCount = authorCountQuerY.executeQuery();
-		authorCount.next();
-		
-		while(true) {
-			System.out.println("________________________________________________________________________________________________________________");
-			System.out.println("---------------------------");
-			System.out.println("|      ____________       |");
-			System.out.println("|                         |");
-			System.out.println("|          Admin          |");
-			System.out.println("|        DashBoard        |");
-			System.out.println("|      ____________       |");
-			System.out.println("|                         |");
-			System.out.println("---------------------------");
-			System.out.println("Dear "+name);
-			System.out.println("---------------------------");
-			System.out.println("        <INVENTORY>        ");
-			System.out.println("       --------------      ");
-			System.out.println(" Total Users    : "+userCount.getInt(1));
-			System.out.println(" Total Books    : "+bookCount.getInt(1));
-			System.out.println(" Total Languages: "+languageCount.getInt(1));
-			System.out.println(" Total Authors  : "+authorCount.getInt(1));
-			System.out.println("---------------------------");
-			System.out.println("|1.add books              |");
-			System.out.println("|2.add Authors            |");
-			System.out.println("|3.add Languages          |");
-			System.out.println("|4.view Books             |");
-			System.out.println("|5.view Authors           |");
-			System.out.println("|6.view Languages         |");
-			System.out.println("|7.view DueDate List      |");
-			System.out.println("|8.Logout                 |");
-			System.out.println("---------------------------");
-			try{//try block starts	
-				System.out.print("Enter a Option:");
-			    int option = scanner.nextInt();
-			 	 if(option == 1) {
-					 BookService bookservice = new BookService();
-					 bookservice.addBook(adminId,adminName);
-					 break;
-				 }
-				 else if(option == 2) {
-					 AuthorService authorservice = new AuthorService();
-					 authorservice.addAuthor(adminId,adminName);
-		             break;
-				 }
-				 else if(option == 3) {
-					 LanguageService languageservice = new LanguageService();
-					 languageservice.addLanguage(adminId, adminName);
-					 break;
-				 }
-				 else if(option == 4) {
-					 BookService bookservice = new BookService();
-					 bookservice.adminViewBooks(adminId, adminName);
-					 break;
-				 }
-				 else if(option == 5) {
-					 AuthorService authorservice = new AuthorService();
-					 authorservice.viewAuthors(adminId, adminName);
-					 break;
-				 }
-				 else if(option == 6) {
-					 LanguageService languageservice = new LanguageService();
-					 languageservice.viewLanguages(adminId, adminName);
-					 break;
-				 }
-				 else if(option == 7) {
-					 BookDueListService bookduelistservice = new BookDueListService();
-					 bookduelistservice.getOverDueDateList(adminId, adminName);
-					 break;
-				 }
-				 else if(option == 8) {
-					 OtherServices otherservice = new OtherServices();
-					 otherservice.indexMethod();
-					 break;
-				 }
-				 else {
-					System.out.println("Invalid option!!! Please Select a Valid Option."); 
-				 }
-//			 	scanner.close();
-			}//try block ends
-			catch(InputMismatchException e) {
-				System.out.println("Invalid option! Please Select a Valid Option.");
-				scanner.next();
-			}
-		}
-		scanner.close();
-	}
-	
-	
-	
-	
-	
-	
+import entities.Admin;
+
+public class AdminService extends Admin {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public void adminLogin() {
+        System.out.println("________________________________________________________________________________________________________________");
+        System.out.println("---------------------------");
+        System.out.println("|       WELCOME TO        |");
+        System.out.println("|    LIBRARY MANAGEMENT   |");
+        System.out.println("|         SYSTEM          |");
+        System.out.println("|      Admin  Login       |");
+        System.out.println("---------------------------");
+
+        while (true) {
+            try (Connection con = ConnectionClass.getConnectionMethod();
+                 PreparedStatement ps = con.prepareStatement("SELECT * FROM admin WHERE username = ? AND password = ?")) {
+
+                System.out.print("Enter Username: ");
+                String username = scanner.next();
+                System.out.print("Enter Password: ");
+                String password = scanner.next();
+
+                ps.setString(1, username);
+                ps.setString(2, password);
+                ResultSet rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    int adminId = rs.getInt("adminid");
+                    String adminName = rs.getString("name");
+                    System.out.println("Login Success.");
+                    adminHome(adminId, adminName);
+                    break;
+                } else {
+                    System.out.println("Invalid Username or Password.");
+                    System.out.println("1. Try again | 2. Exit");
+                    int option = scanner.nextInt();
+                    if (option == 2) {
+                        new OtherServices().indexMethod();
+                        break;
+                    }
+                }
+            } catch (SQLException | InputMismatchException e) {
+                System.out.println("Invalid input! Please try again.");
+                scanner.nextLine(); // Clear buffer
+            }
+        }
+    }
+
+    public void adminHome(int adminId, String adminName) {
+        System.out.println("________________________________________________________________________________________________________________");
+        System.out.println("---------------------------");
+        System.out.println("|        Admin Dashboard       |");
+        System.out.println("---------------------------");
+        System.out.println("Welcome, " + adminName);
+        System.out.println("---------------------------");
+
+        String userCountQuery = "SELECT COUNT(uid) FROM user";
+        String bookCountQuery = "SELECT COUNT(bookid) FROM book";
+        String languageCountQuery = "SELECT COUNT(languageid) FROM language";
+        String authorCountQuery = "SELECT COUNT(authorid) FROM author";
+
+        try (Connection con = ConnectionClass.getConnectionMethod();
+             PreparedStatement psUser = con.prepareStatement(userCountQuery);
+             PreparedStatement psBook = con.prepareStatement(bookCountQuery);
+             PreparedStatement psLanguage = con.prepareStatement(languageCountQuery);
+             PreparedStatement psAuthor = con.prepareStatement(authorCountQuery)) {
+
+            ResultSet rsUser = psUser.executeQuery();
+            ResultSet rsBook = psBook.executeQuery();
+            ResultSet rsLanguage = psLanguage.executeQuery();
+            ResultSet rsAuthor = psAuthor.executeQuery();
+
+            rsUser.next();
+            rsBook.next();
+            rsLanguage.next();
+            rsAuthor.next();
+
+            System.out.println("Total Users    : " + rsUser.getInt(1));
+            System.out.println("Total Books    : " + rsBook.getInt(1));
+            System.out.println("Total Languages: " + rsLanguage.getInt(1));
+            System.out.println("Total Authors  : " + rsAuthor.getInt(1));
+            System.out.println("---------------------------");
+
+            while (true) {
+                System.out.println("|1. Add Books          |");
+                System.out.println("|2. Add Authors        |");
+                System.out.println("|3. Add Languages      |");
+                System.out.println("|4. View Books         |");
+                System.out.println("|5. View Authors       |");
+                System.out.println("|6. View Languages     |");
+                System.out.println("|7. View Due Date List |");
+                System.out.println("|8. Logout             |");
+                System.out.println("---------------------------");
+
+                System.out.print("Enter an Option: ");
+                try {
+                    int option = scanner.nextInt();
+                    switch (option) {
+                        case 1 -> new BookService().addBook(adminId, adminName);
+                        case 2 -> new AuthorService().addAuthor(adminId, adminName);
+                        case 3 -> new LanguageService().addLanguage(adminId, adminName);
+                        case 4 -> new BookService().adminViewBooks(adminId, adminName);
+                        case 5 -> new AuthorService().viewAuthors(adminId, adminName);
+                        case 6 -> new LanguageService().viewLanguages(adminId, adminName);
+                        case 7 -> new BookDueListService().getOverDueDateList(adminId, adminName);
+                        case 8 -> {
+                            new OtherServices().indexMethod();
+                            return;
+                        }
+                        default -> System.out.println("Invalid option! Please select a valid option.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input! Please enter a number.");
+                    scanner.next(); // Clear buffer
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching data: " + e.getMessage());
+        }
+    }
 }
