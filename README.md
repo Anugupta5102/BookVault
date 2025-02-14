@@ -80,6 +80,7 @@ CREATE TABLE borrowed_books (
 ✅ **Borrow & Return Books** 🔄  
 ✅ **Due Date Tracking** ⏳  
 ✅ **Search Books by Title, Author, Genre** 🔍  
+✅ **Data Persistence with MySQL** 🗄️  
 
 ---
 
