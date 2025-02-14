@@ -1,11 +1,11 @@
 package services;
+import entities.Admin;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import entities.Admin;
 
 public class AdminService extends Admin{
 	
