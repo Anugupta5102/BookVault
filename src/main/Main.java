@@ -1,8 +1,8 @@
 package main;
 
+import java.util.Scanner;
 import services.AdminService;
 import services.UserService;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
