@@ -10,7 +10,7 @@ public class Rating {
     public Rating(int bookId, int userId, float rating) {
         this.bookId = bookId;
         this.userId = userId;
-        this.rating = rating;
+        setRating(rating); // Ensuring valid rating
     }
 
     public int getBookId() { return bookId; }
@@ -20,5 +20,9 @@ public class Rating {
     public void setUserId(int userId) { this.userId = userId; }
 
     public float getRating() { return rating; }
-    public void setRating(float rating) { this.rating = rating; }
-}
+    public void setRating(float rating) { 
+        if (rating < 0 || rating > 5) {
+            throw new IllegalArgumentException("Rating must be between 0 and 5.");
+        }
+        this.rating = rating;
+    }}

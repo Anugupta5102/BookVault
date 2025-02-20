@@ -1,5 +1,7 @@
 package entities;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class User {
     private int userId;
     private String name;
@@ -25,5 +27,9 @@ public class User {
     public void setEmail(String email) { this.email = email; }
 
     public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    
+    public void setPassword(String password) {
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt()); // Secure hashing
+}
+
 }

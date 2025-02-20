@@ -7,7 +7,7 @@ public class Book {
     private int languageId;
     private String genre;
     private float rating;
-    private boolean available; // Consider using an Enum
+    private boolean available; 
 
     public Book() {}
 
@@ -41,4 +41,8 @@ public class Book {
 
     public boolean isAvailable() { return available; }
     public void setAvailable(boolean available) { this.available = available; }
+
+    public boolean isBookAvailable() {
+        return available;
+    }
 }

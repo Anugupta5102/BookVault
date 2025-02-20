@@ -1,146 +1,303 @@
 package services;
 
+import java.io.Console;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
-import org.mindrot.jbcrypt.BCrypt; // Hashing library
-
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
-    private final Scanner scanner = new Scanner(System.in); // Class-level scanner to prevent leaks
+    private final Scanner scanner = new Scanner(System.in);
+    private int loggedInUserId = -1; // ✅ Track the logged-in user ID
 
-    // Method to register a new user
+    public void userPanel() {
+        while (true) {
+            System.out.println("________________________________________________________________________________________________________________");
+            System.out.println("---------------------------");
+            System.out.println("|       WELCOME TO        |");
+            System.out.println("|    LIBRARY MANAGEMENT   |");
+            System.out.println("|         SYSTEM          |");
+            System.out.println("|      User Login         |");
+            System.out.println("---------------------------");
+            System.out.println("1️⃣ Register");
+            System.out.println("2️⃣ Login");
+            System.out.println("3️⃣ Exit");
+            System.out.print("Enter your choice: ");
+
+            if (!scanner.hasNextInt()) {
+                System.out.println("⚠️ Invalid input! Please enter a number.");
+                scanner.next();
+                continue;
+            }
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> registerUser();
+                case 2 -> {
+                    if (userLogin()) {
+                        userHome();
+                    }
+                }
+                case 3 -> {
+                    System.out.println("🔴 Exiting...");
+                    return;
+                }
+                default -> System.out.println("❌ Invalid option! Try again.");
+            }
+        }
+    }
+
     public void registerUser() {
-        System.out.println("Enter User Name:");
+        System.out.print("Enter User Name: ");
         String userName = scanner.nextLine();
-        System.out.println("Enter Email:");
+        System.out.print("Enter Email: ");
         String email = scanner.nextLine();
-        System.out.println("Enter Password:");
-        String password = scanner.next();
-
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()); // Hash password
+        String password = maskPassword();
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
         String query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, userName);
-            ps.setString(2, email);
+            ps.setString(2, email.trim().toLowerCase());
             ps.setString(3, hashedPassword);
             ps.executeUpdate();
             System.out.println("✅ User registered successfully!");
         } catch (SQLException e) {
             System.err.println("❌ Error: Unable to register user.");
-            e.printStackTrace();
         }
     }
 
-    // User Login with Secure Password Checking
-    public void userLogin() {
-        System.out.print("Enter Email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter Password: ");
-        String password = scanner.nextLine();
+    public boolean userLogin() {
+        System.out.println("________________________________________________________________________________________________________________");
+        System.out.println("---------------------------");
+        System.out.println("|       WELCOME TO        |");
+        System.out.println("|    LIBRARY MANAGEMENT   |");
+        System.out.println("|         SYSTEM          |");
+        System.out.println("|      User Login         |");
+        System.out.println("---------------------------");
 
-        String query = "SELECT user_id, name, is_admin, password FROM users WHERE email = ?";
+        System.out.print("Enter User Email: ");
+        String email = scanner.nextLine().trim();
+        String password = maskPassword();
 
+        int userId = authenticateUser(email, password);
+        if (userId != -1) {
+            loggedInUserId = userId;
+            userHome();
+            return true;
+        }
+        return false;
+    }
+
+    public int authenticateUser(String email, String password) {
+        String query = "SELECT user_id, password FROM users WHERE email = ?";
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
             
             ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String storedHash = rs.getString("password");
-
-                if (BCrypt.checkpw(password, storedHash)) { // Compare hashed password
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     int userId = rs.getInt("user_id");
-                    String userName = rs.getString("name");
-                    boolean isAdmin = rs.getInt("is_admin") == 1; // Ensure correct boolean handling
+                    String storedHashedPassword = rs.getString("password");
 
-                    System.out.println("✅ Login successful! Welcome, " + userName);
-                    System.out.println("🔹 User ID: " + userId);
-                    System.out.println("🔹 Role: " + (isAdmin ? "Admin" : "User"));
+                    if (BCrypt.checkpw(password, storedHashedPassword)) {
+                        loggedInUserId = userId;
+                        System.out.println("✅ Login successful! Welcome, " + email);
+                        return userId;
+                    } else {
+                        System.out.println("❌ Invalid Credentials.");
+                    }
                 } else {
-                    System.out.println("❌ Incorrect password. Try again.");
+                    System.out.println("❌ No user found with this email.");
                 }
-            } else {
-                System.out.println("❌ No user found with this email.");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error: Unable to log in.");
-            e.printStackTrace();
+            System.err.println("❌ Error: Database connection issue.");
+        }
+        return -1;
+    }
+
+    public void userHome() {
+        while (true) {
+            System.out.println("________________________________________________________________________________________________________________");
+            System.out.println("---------------------------");
+            System.out.println("|        User Panel       |");
+            System.out.println("---------------------------");
+            System.out.println("1️⃣ View Reports");
+            System.out.println("2️⃣ Issue Book");
+            System.out.println("3️⃣ Return Book");
+            System.out.println("4️⃣ Update Profile");
+            System.out.println("5️⃣ Delete Account");
+            System.out.println("6️⃣ Logout");
+            System.out.print("Enter your choice: ");
+
+            if (!scanner.hasNextInt()) {
+                System.out.println("⚠️ Invalid input! Please enter a number.");
+                scanner.next();
+                continue;
+            }
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1 -> System.out.println("📊 Viewing Reports...");
+                case 2 -> issueBook();
+                case 3 -> returnBook();
+                case 4 -> updateUser();
+                case 5 -> deleteUser();
+                case 6 -> {
+                    System.out.println("🔴 Logging out...");
+                    loggedInUserId = -1;
+                    return;
+                }
+                default -> System.out.println("❌ Invalid option! Try again.");
+            }
         }
     }
 
-    // Method to view all registered users
-    public void viewUsers() {
-        String query = "SELECT user_id, name, email, is_admin FROM users";
-
+    public void issueBook() {
+        if (loggedInUserId == -1) {
+            System.out.println("⚠️ Please log in to issue a book.");
+            return;
+        }
+    
+        System.out.print("Enter Book ID to Issue: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine();
+    
+        String checkQuery = "SELECT * FROM books WHERE book_id = ? AND is_issued = false";
+        String issueQuery = "UPDATE books SET is_issued = true, issued_to = ? WHERE book_id = ?";
+    
         try (Connection con = ConnectionClass.getConnectionMethod();
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            System.out.println("\n👥 Registered Users:");
-            while (rs.next()) {
-                System.out.printf("ID: %d | Name: %s | Email: %s | Admin: %s\n",
-                        rs.getInt("user_id"), rs.getString("name"),
-                        rs.getString("email"), rs.getInt("is_admin") == 1 ? "✅ Yes" : "❌ No");
+             PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+            
+            checkStmt.setInt(1, bookId);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (!rs.next()) {
+                    System.out.println("❌ Book is not available for issue.");
+                    return;
+                }
             }
+    
+            try (PreparedStatement issueStmt = con.prepareStatement(issueQuery)) {
+                issueStmt.setInt(1, loggedInUserId);
+                issueStmt.setInt(2, bookId);
+                issueStmt.executeUpdate();
+                System.out.println("✅ Book Issued Successfully!");
+            }
+    
         } catch (SQLException e) {
-            System.err.println("❌ Error: Unable to retrieve users.");
+            System.err.println("❌ Error: Unable to issue book.");
             e.printStackTrace();
         }
     }
+    
+    
 
-    // Method to update user details
+    public void returnBook() {
+        if (loggedInUserId == -1) {
+            System.out.println("⚠️ Please log in to return a book.");
+            return;
+        }
+    
+        System.out.print("Enter Book ID to Return: ");
+        int bookId = scanner.nextInt();
+        scanner.nextLine();
+    
+        String checkQuery = "SELECT * FROM books WHERE book_id = ? AND issued_to = ?";
+        String returnQuery = "UPDATE books SET is_issued = false, issued_to = NULL WHERE book_id = ?";
+    
+        try (Connection con = ConnectionClass.getConnectionMethod();
+             PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+            
+            checkStmt.setInt(1, bookId);
+            checkStmt.setInt(2, loggedInUserId);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (!rs.next()) {
+                    System.out.println("❌ You cannot return this book (not issued to you).");
+                    return;
+                }
+            }
+    
+            try (PreparedStatement returnStmt = con.prepareStatement(returnQuery)) {
+                returnStmt.setInt(1, bookId);
+                returnStmt.executeUpdate();
+                System.out.println("✅ Book Returned Successfully!");
+            }
+    
+        } catch (SQLException e) {
+            System.err.println("❌ Error: Unable to return book.");
+            e.printStackTrace();
+        }
+    }
+    
+    
+    private String maskPassword() {
+        Console console = System.console();
+        if (console != null) {
+            return new String(console.readPassword("Enter Password: "));
+        }
+        System.out.print("Enter Password: ");
+        return scanner.nextLine();
+    }
+
     public void updateUser() {
-        System.out.println("Enter User ID to update:");
-        int userId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.println("Enter new Name:");
+        System.out.print("Enter new Name: ");
         String newName = scanner.nextLine();
-        System.out.println("Enter new Email:");
+        System.out.print("Enter new Email: ");
         String newEmail = scanner.nextLine();
 
         String query = "UPDATE users SET name = ?, email = ? WHERE user_id = ?";
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
+
             ps.setString(1, newName);
-            ps.setString(2, newEmail);
-            ps.setInt(3, userId);
-            int rowsUpdated = ps.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("✅ User details updated successfully!");
-            } else {
-                System.out.println("⚠️ No user found with the given ID.");
-            }
+            ps.setString(2, newEmail.toLowerCase());
+            ps.setInt(3, loggedInUserId);
+
+            ps.executeUpdate();
+            System.out.println("✅ Profile updated successfully!");
         } catch (SQLException e) {
-            System.err.println("❌ Error: Unable to update user.");
-            e.printStackTrace();
+            System.err.println("❌ Error: Unable to update profile.");
         }
     }
-
-    // Method to delete a user
     public void deleteUser() {
-        System.out.println("Enter User ID to delete:");
-        int userId = scanner.nextInt();
-
+        if (loggedInUserId == -1) {
+            System.out.println("⚠️ You must be logged in to delete your account.");
+            return;
+        }
+    
+        System.out.print("❗ Are you sure you want to delete your account? (yes/no): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+    
+        if (!confirm.equals("yes")) {
+            System.out.println("❌ Account deletion cancelled.");
+            return;
+        }
+    
         String query = "DELETE FROM users WHERE user_id = ?";
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
-            ps.setInt(1, userId);
+    
+            ps.setInt(1, loggedInUserId);
+    
             int rowsDeleted = ps.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("✅ User deleted successfully!");
+                System.out.println("✅ Account deleted successfully!");
+                loggedInUserId = -1;
             } else {
-                System.out.println("⚠️ No user found with the given ID.");
+                System.out.println("⚠️ No user found.");
             }
         } catch (SQLException e) {
             System.err.println("❌ Error: Unable to delete user.");
-            e.printStackTrace();
         }
     }
+    
 }
