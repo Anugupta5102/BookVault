@@ -30,7 +30,7 @@ public class AdminService extends Admin {
                 System.out.print("Enter Username: ");
                 String username = scanner.nextLine().trim();
 
-                String password = getMaskedPassword(); // ✅ Masked Password Input (Works in VS Code)
+                String password = getMaskedPassword();
 
                 ps.setString(1, username);
                 ResultSet rs = ps.executeQuery();
@@ -38,7 +38,7 @@ public class AdminService extends Admin {
                 if (rs.next()) {
                     String hashedPassword = rs.getString("password");
 
-                    if (BCrypt.checkpw(password, hashedPassword)) { // ✅ Verify hashed password
+                    if (BCrypt.checkpw(password, hashedPassword)) { // Verify hashed password
                         int adminId = rs.getInt("user_id");
                         String adminName = rs.getString("name");
                         System.out.println("✅ Login Success.");
@@ -79,7 +79,6 @@ public class AdminService extends Admin {
             char[] passwordArray = console.readPassword("Enter Password: ");
             return new String(passwordArray);
         } else {
-            // ✅ Mask password manually 
             System.out.print("Enter Password: ");
             StringBuilder password = new StringBuilder();
             while (true) {

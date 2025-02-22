@@ -15,7 +15,7 @@ public class LanguageService {
         System.out.println("Enter Language Name:");
         String languageName = scanner.nextLine();
 
-        String query = "INSERT INTO languages (name) VALUES (?)"; // Correct table name
+        String query = "INSERT INTO languages (name) VALUES (?)"; 
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, languageName);

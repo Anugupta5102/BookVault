@@ -128,7 +128,7 @@ public class TransactionService {
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, bookId);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // Book exists if query returns a result
+            return rs.next(); 
         } catch (SQLException e) {
             System.err.println("❌ Error: Unable to check book existence.");
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class TransactionService {
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, bookId);
             ResultSet rs = ps.executeQuery();
-            return rs.next(); // Book is issued if query returns a result
+            return rs.next();
         } catch (SQLException e) {
             System.err.println("❌ Error: Unable to check book issuance status.");
             e.printStackTrace();

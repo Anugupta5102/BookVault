@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class RatingService {
     private static final Scanner scanner = new Scanner(System.in);
 
-    public void rateBook(int userId) { // Assume userId is passed for tracking ratings
+    public void rateBook(int userId) { 
         System.out.print("Enter Book ID: ");
         int bookId = scanner.nextInt();
         System.out.print("Enter Rating (1-5): ");

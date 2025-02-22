@@ -10,7 +10,6 @@ import org.mindrot.jbcrypt.BCrypt;
 public class FixPasswordHash {
     public static void main(String[] args) {
         try (Connection con = ConnectionClass.getConnectionMethod()) {
-            // Select users with plaintext passwords (not hashed)
             String selectQuery = "SELECT user_id, password FROM users WHERE password NOT LIKE '$2a$%'";
             PreparedStatement psSelect = con.prepareStatement(selectQuery);
             ResultSet rs = psSelect.executeQuery();

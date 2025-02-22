@@ -18,7 +18,7 @@ public class Main {
             System.out.println("\n📚 Welcome to the Library Management System 📚");
             System.out.println("1️⃣ Admin Login");
             System.out.println("2️⃣ User Login");
-            System.out.println("3️⃣ User Registration"); // ✅ Fixed
+            System.out.println("3️⃣ User Registration"); 
             System.out.println("4️⃣ Exit");
             System.out.print("Enter your choice: ");
 
@@ -29,7 +29,7 @@ public class Main {
             }
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -43,7 +43,7 @@ public class Main {
                     }
                     break;
                 case 3:
-                    userService.registerUser(); // ✅ Now registration appears
+                    userService.registerUser(); 
                     break;
                 case 4:
                     System.out.println("👋 Exiting the system...");
@@ -122,7 +122,7 @@ public class Main {
                 case 2:
                     transactionService.returnBook();
                     break;
-                    case 3:
+                case 3:
                     System.out.print("Enter User ID: ");
                     int userId = scanner.nextInt();
                     

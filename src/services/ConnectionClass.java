@@ -11,7 +11,7 @@ public class ConnectionClass {
     public static Connection getConnectionMethod() {
         Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); // Ensure MySQL Driver is loaded
+            Class.forName("com.mysql.cj.jdbc.Driver"); 
             con = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
             System.out.println("❌ MySQL Driver Not Found! Add the JAR file.");

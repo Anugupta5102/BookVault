@@ -15,7 +15,7 @@ public class AuthorService {
         System.out.println("Enter Author Name:");
         String authorName = scanner.nextLine();
 
-        String query = "INSERT INTO authors (name) VALUES (?)"; // Ensure table name is correct
+        String query = "INSERT INTO authors (name) VALUES (?)"; 
         try (Connection con = ConnectionClass.getConnectionMethod();
              PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, authorName);
@@ -28,7 +28,7 @@ public class AuthorService {
 
     // Method to view all authors
     public void viewAuthors() {
-        String query = "SELECT author_id, name FROM authors"; // Ensure correct column names
+        String query = "SELECT author_id, name FROM authors"; 
 
         try (Connection con = ConnectionClass.getConnectionMethod();
              Statement stmt = con.createStatement();
