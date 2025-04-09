@@ -1,7 +1,7 @@
-# 📚 Library Management System
+# 📚 BookSelf – Organize. Borrow. Read. Repeat.
 
 ## 🚀 Overview
-The **Library Management System** is a robust Java-based application built using JDBC for database connectivity and MySQL for persistent storage. This system is designed to streamline the everyday operations of a library, allowing both administrators and users to manage books, track borrowing activities, and maintain accurate records efficiently.
+The **BookSelf** is a robust Java-based application built using JDBC for database connectivity and MySQL for persistent storage. This system is designed to streamline the everyday operations of a library, allowing both administrators and users to manage books, track borrowing activities, and maintain accurate records efficiently.
 
 ---
 
