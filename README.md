@@ -1,7 +1,7 @@
 # 📚 Library Management System
 
 ## 🚀 Overview
-The **Library Management System** is a Java-based project using **JDBC** and **MySQL**, designed to manage books, authors, languages, and user transactions efficiently.
+The **Library Management System** is a robust Java-based application built using JDBC for database connectivity and MySQL for persistent storage. This system is designed to streamline the everyday operations of a library, allowing both administrators and users to manage books, track borrowing activities, and maintain accurate records efficiently.
 
 ---
 
@@ -110,8 +110,6 @@ java Main
 
 ---
 
----
-
 ## 🏆 Future Enhancements
 🚀 **GUI Implementation using JavaFX/Swing**  
 🚀 **Advanced Search & Filtering**  
@@ -119,7 +117,6 @@ java Main
 🚀 **Email Notifications for Due Books**  
 
 📢 *Have suggestions? Feel free to contribute!*
-##
 📧 anugupta5102@gmail.com  
 🔗 [LinkedIn](https://www.linkedin.com/in/anushree-gupta-832410239/) | [GitHub](https://github.com/Anugupta5102)
 
