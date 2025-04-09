@@ -110,11 +110,6 @@ java Main
 
 ---
 
-## 🤝 Contributors
-👤 **Anushree Gupta**  
-📧 anugupta5102@gmail.com  
-🔗 [LinkedIn](https://www.linkedin.com/in/anushree-gupta-832410239/) | [GitHub](https://github.com/Anugupta5102)
-
 ---
 
 ## 🏆 Future Enhancements
@@ -123,7 +118,10 @@ java Main
 🚀 **Book Reservation System**  
 🚀 **Email Notifications for Due Books**  
 
-📢 *Have suggestions? Feel free to contribute!*  
+📢 *Have suggestions? Feel free to contribute!*
+##
+📧 anugupta5102@gmail.com  
+🔗 [LinkedIn](https://www.linkedin.com/in/anushree-gupta-832410239/) | [GitHub](https://github.com/Anugupta5102)
 
 ---
 
